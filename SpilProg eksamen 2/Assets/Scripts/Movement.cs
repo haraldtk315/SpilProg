@@ -1,7 +1,9 @@
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Movement : MonoBehaviour
+[RequireComponent(typeof(Rigidbody2D))]
+public class Movement : NetworkBehaviour
 {
     [Header("Movement Enabled")]
     [SerializeField] private bool allowMovement = true;
@@ -19,31 +21,31 @@ public class Movement : MonoBehaviour
     [SerializeField] private Animator animator;
     [SerializeField] private string walkParameter = "IsWalking";
 
-    [Header("Sprite Flip")]
+    [Header("Visual Flip")]
     [SerializeField] private Transform visualRoot;
 
     private Rigidbody2D rb;
-    private bool isGrounded;
     private Vector3 originalVisualScale;
+    private bool movementBlocked;
 
-    void Start()
+    private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
 
         if (animator == null)
             animator = GetComponentInChildren<Animator>();
 
-        if (visualRoot == null)
-            visualRoot = transform;
-
-        originalVisualScale = visualRoot.localScale;
+        originalVisualScale = visualRoot != null ? visualRoot.localScale : Vector3.one;
     }
 
-    void Update()
+    private void Update()
     {
-        if (!allowMovement)
+        if (!IsOwner)
+            return;
+
+        if (!allowMovement || movementBlocked)
         {
-            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+            rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
 
             if (animator != null)
                 animator.SetBool(walkParameter, false);
@@ -51,26 +53,33 @@ public class Movement : MonoBehaviour
             return;
         }
 
-        isGrounded = Physics2D.OverlapCircle(
-            groundCheck.position,
-            groundCheckRadius,
-            groundLayer
-        );
+        bool isGrounded = true;
 
-        if (Keyboard.current.spaceKey.wasPressedThisFrame && isGrounded)
+        if (groundCheck != null)
         {
-            rb.linearVelocity = new Vector2(
-                rb.linearVelocity.x,
-                jumpForce
+            isGrounded = Physics2D.OverlapCircle(
+                groundCheck.position,
+                groundCheckRadius,
+                groundLayer
             );
+        }
+
+        if (Keyboard.current != null &&
+            Keyboard.current.spaceKey.wasPressedThisFrame &&
+            isGrounded)
+        {
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
         }
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
-        if (!allowMovement)
+        if (!IsOwner)
             return;
-//Vandret bevægelse
+
+        if (!allowMovement || movementBlocked)
+            return;
+
         float moveInput =
             Keyboard.current.aKey.isPressed ? -1 :
             Keyboard.current.dKey.isPressed ? 1 : 0;
@@ -80,24 +89,34 @@ public class Movement : MonoBehaviour
             rb.linearVelocity.y
         );
 
+        bool isWalking = Mathf.Abs(moveInput) > 0.01f;
+
         if (animator != null)
-            animator.SetBool(walkParameter, Mathf.Abs(moveInput) > 0.01f);
+            animator.SetBool(walkParameter, isWalking);
 
         if (moveInput > 0)
-        {
-            visualRoot.localScale = new Vector3(
-                Mathf.Abs(originalVisualScale.x),
-                originalVisualScale.y,
-                originalVisualScale.z
-            );
-        }
+            FaceDirection(1f);
         else if (moveInput < 0)
-        {
-            visualRoot.localScale = new Vector3(
-                -Mathf.Abs(originalVisualScale.x),
-                originalVisualScale.y,
-                originalVisualScale.z
-            );
-        }
+            FaceDirection(-1f);
+    }
+
+    public void SetMovementBlocked(bool blocked)
+    {
+        movementBlocked = blocked;
+
+        if (blocked && rb != null)
+            rb.linearVelocity = Vector2.zero;
+    }
+
+    private void FaceDirection(float direction)
+    {
+        if (visualRoot == null)
+            return;
+
+        visualRoot.localScale = new Vector3(
+            Mathf.Abs(originalVisualScale.x) * direction,
+            originalVisualScale.y,
+            originalVisualScale.z
+        );
     }
 }

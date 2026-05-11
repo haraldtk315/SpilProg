@@ -11,6 +11,9 @@ public class PhysicsArmSwing2D : NetworkBehaviour
     [Header("Pivot Setup")]
     [SerializeField] private Transform armPivot;
 
+    [Header("Arm Hit Trigger")]
+    [SerializeField] private Collider2D armTriggerCollider;
+
     [Header("Dummy Arm Movement")]
     [SerializeField] private bool useDummyIdleMovement = true;
     [SerializeField] private float idleWobbleAmount = 12f;
@@ -31,56 +34,55 @@ public class PhysicsArmSwing2D : NetworkBehaviour
         "Player4"
     };
 
-    [Header("Ragdoll Hit")]
+    [Header("Hit")]
     [SerializeField] private float hitCooldown = 0.5f;
 
     private bool isSwinging;
     private float lastHitTime = -999f;
     private Quaternion startRotation;
+    private NetworkObject ownerNetworkObject;
 
     private void Awake()
     {
+        ownerNetworkObject = GetComponentInParent<NetworkObject>();
+
         if (armPivot == null)
             armPivot = transform;
+
+        if (armTriggerCollider == null)
+            armTriggerCollider = GetComponentInChildren<Collider2D>();
+
+        if (armTriggerCollider != null)
+        {
+            armTriggerCollider.isTrigger = true;
+            armTriggerCollider.enabled = false;
+        }
 
         startRotation = armPivot.localRotation;
     }
 
     private void Update()
     {
-        if (IsSpawned && !IsOwner)
+        if (!IsMyArm())
             return;
 
         if (Keyboard.current != null && Keyboard.current[attackKey].wasPressedThisFrame)
         {
-            if (IsSpawned)
-                SwingServerRpc();
-            else
-                StartCoroutine(SwingRoutine());
+            SwingServerRpc();
         }
     }
 
     private void LateUpdate()
     {
-        if (isSwinging)
+        if (isSwinging || armPivot == null)
             return;
 
-        if (armPivot == null)
-            return;
+        float wobble = useDummyIdleMovement
+            ? Mathf.Sin(Time.time * idleWobbleSpeed) * idleWobbleAmount
+            : 0f;
 
-        if (!useDummyIdleMovement)
-        {
-            armPivot.localRotation = Quaternion.Lerp(
-                armPivot.localRotation,
-                startRotation,
-                returnSpeed * Time.deltaTime
-            );
-
-            return;
-        }
-
-        float wobble = Mathf.Sin(Time.time * idleWobbleSpeed) * idleWobbleAmount;
-        Quaternion targetRotation = startRotation * Quaternion.Euler(0f, 0f, wobble);
+        Quaternion targetRotation =
+            startRotation * Quaternion.Euler(0f, 0f, wobble);
 
         armPivot.localRotation = Quaternion.Lerp(
             armPivot.localRotation,
@@ -89,22 +91,15 @@ public class PhysicsArmSwing2D : NetworkBehaviour
         );
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     private void SwingServerRpc()
     {
-        if (isSwinging)
-            return;
-
-        StartCoroutine(SwingRoutine());
         SwingClientRpc();
     }
 
     [ClientRpc]
     private void SwingClientRpc()
     {
-        if (IsServer)
-            return;
-
         StartCoroutine(SwingRoutine());
     }
 
@@ -114,6 +109,9 @@ public class PhysicsArmSwing2D : NetworkBehaviour
             yield break;
 
         isSwinging = true;
+
+        if (armTriggerCollider != null)
+            armTriggerCollider.enabled = true;
 
         float timer = 0f;
         float startZ = armPivot.localEulerAngles.z;
@@ -131,12 +129,18 @@ public class PhysicsArmSwing2D : NetworkBehaviour
             yield return null;
         }
 
+        if (armTriggerCollider != null)
+            armTriggerCollider.enabled = false;
+
         armPivot.localRotation = startRotation;
         isSwinging = false;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (!IsMyArm())
+            return;
+
         if (!isSwinging)
             return;
 
@@ -149,21 +153,37 @@ public class PhysicsArmSwing2D : NetworkBehaviour
         if (other.transform.root == transform.root)
             return;
 
-        PlayerRagdollReceiver2D ragdollReceiver =
-            other.GetComponentInParent<PlayerRagdollReceiver2D>();
+        NetworkObject hitNetworkObject = other.GetComponentInParent<NetworkObject>();
 
-        if (ragdollReceiver == null)
+        if (hitNetworkObject == null)
             return;
 
         lastHitTime = Time.time;
 
-        Vector2 hitDirection =
-            other.transform.position - transform.position;
+        float sideDirection =
+            other.transform.position.x > transform.root.position.x ? 1f : -1f;
 
-        if (IsSpawned)
-            ragdollReceiver.RagdollServerRpc(hitDirection);
-        else
-            ragdollReceiver.StartRagdoll(hitDirection);
+        ReportHitServerRpc(hitNetworkObject.NetworkObjectId, sideDirection);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void ReportHitServerRpc(ulong hitNetworkObjectId, float sideDirection)
+    {
+        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(
+                hitNetworkObjectId,
+                out NetworkObject hitObject))
+            return;
+
+        PlayerRagdollReceiver2D ragdollReceiver =
+            hitObject.GetComponent<PlayerRagdollReceiver2D>();
+
+        if (ragdollReceiver == null)
+            ragdollReceiver = hitObject.GetComponentInChildren<PlayerRagdollReceiver2D>();
+
+        if (ragdollReceiver == null)
+            return;
+
+        ragdollReceiver.PlayRagdollClientRpc(sideDirection);
     }
 
     private bool HasValidPlayerTag(Collider2D other)
@@ -175,5 +195,16 @@ public class PhysicsArmSwing2D : NetworkBehaviour
         }
 
         return false;
+    }
+
+    private bool IsMyArm()
+    {
+        if (ownerNetworkObject == null)
+            return true;
+
+        if (!ownerNetworkObject.IsSpawned)
+            return true;
+
+        return ownerNetworkObject.IsOwner;
     }
 }
