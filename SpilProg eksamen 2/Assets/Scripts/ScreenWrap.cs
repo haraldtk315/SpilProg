@@ -7,6 +7,6 @@ public class ScreenWrap : MonoBehaviour
     {
         Vector3 wrapPos = BorderManager.GetWrapPos(transform.position);
 
-        transform.position = wrapPos;
+        transform.position = wrapPos + transform.forward * transform.position.z;
     }
 }
