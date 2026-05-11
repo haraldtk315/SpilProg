@@ -29,16 +29,18 @@ public class ScoreBoardManager : NetworkBehaviour
         instance = this;
     }
     
-    /*
+    
     public void Update()
     {
         scoreText.text = score.Value.ToString();
 
+        /*
         InputAction jump = InputSystem.actions.FindAction("Crouch");
         if (jump.ReadValue<float>() > 0 && jump.triggered)
         {
             AddScoreServerRpc();
         }
+        */
     }
-    */
+
 }
