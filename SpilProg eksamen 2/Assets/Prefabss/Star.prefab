@@ -27,8 +27,8 @@ Transform:
   m_GameObject: {fileID: 768989760230985843}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.5826, y: 0.0017, z: 0}
-  m_LocalScale: {x: 0.6207, y: 0.6207, z: 0.6207}
+  m_LocalPosition: {x: 0.2943, y: 0.2807, z: 0}
+  m_LocalScale: {x: 1.2158117, y: 1.2158117, z: 1.2158117}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -82,7 +82,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 93f46e11b3ceaf2438d3f2d282ef3e6c, type: 3}
+  m_Sprite: {fileID: -1341738731, guid: e1e253a914995d74ca9910739975714d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -111,5 +111,5 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 3.4325562, y: 3.3882606, z: 0.2}
-  m_Center: {x: -0.07250619, y: 0.024168849, z: 0}
+  m_Size: {x: 0.97973496, y: 0.9637699, z: 0.2}
+  m_Center: {x: 0.004314447, y: 0.0018302957, z: 0}
