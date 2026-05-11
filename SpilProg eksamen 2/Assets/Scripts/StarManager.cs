@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Data;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -11,7 +12,7 @@ public class StarManager : MonoBehaviour
     private GameObject currentStar;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Awake()
+    void Start()
     {
         SpawnStar();
     }
@@ -42,6 +43,7 @@ public class StarManager : MonoBehaviour
         //Spawn a new star at a random position within the bounds of the game area
         SpawnStar();
     }
+
     public void SpawnStar()
     {
         if (currentStar != null) return;
@@ -49,11 +51,14 @@ public class StarManager : MonoBehaviour
         Vector3 spawnPos;
         bool validPosition = false;
 
+        Vector2 mapSize = BorderManager.size;
+        Vector2 offset = new Vector2(BorderManager.instance.leftLimit, BorderManager.instance.bottomLimit);
+
         for (int i = 0; i < 20; i++) 
         {
             spawnPos = new Vector3(
-                Random.Range(-9.16f, 9.16f),
-                Random.Range(-3.76f, 5.69f),
+                Random.Range(offset.x + 1, offset.x + mapSize.x - 1),
+                Random.Range(offset.y + 1, offset.y + mapSize.y - 1),
                 1.85f
             );
 

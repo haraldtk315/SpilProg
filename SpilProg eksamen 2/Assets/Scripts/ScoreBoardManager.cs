@@ -1,8 +1,5 @@
 using UnityEngine;
 using Unity.Netcode;
-using Unity.VisualScripting;
-using UnityEngine.InputSystem;
-using System.ComponentModel;
 
 public class ScoreBoardManager : NetworkBehaviour
 {
@@ -29,7 +26,6 @@ public class ScoreBoardManager : NetworkBehaviour
         }
         instance = this;
     }
-    
     
     public void Update()
     {
