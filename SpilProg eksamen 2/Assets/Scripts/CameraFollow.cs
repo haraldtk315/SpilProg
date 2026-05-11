@@ -3,12 +3,13 @@ using UnityEngine;
 public class CameraFollow : MonoBehaviour
 {
 
-    [SerializeField] Transform player;
+    [HideInInspector] public Transform player;
     [Range(0, 1)] [SerializeField] float speed;
 
     // Update is called once per frame
     void FixedUpdate()
     {
+        if (player)
         transform.position = new Vector3(Mathf.Lerp(transform.position.x, player.position.x, speed), transform.position.y, transform.position.z);
     }
 }

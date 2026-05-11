@@ -1,3 +1,4 @@
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -16,6 +17,7 @@ public class Movement : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        Camera.main.GetComponent<CameraFollow>().player = transform;
         rb = GetComponent<Rigidbody2D>();
     }
 
@@ -27,8 +29,9 @@ public class Movement : MonoBehaviour
         if (Keyboard.current.spaceKey.wasPressedThisFrame && isGrounded)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
-        }                       
+        }
     }
+
     void FixedUpdate()
     {
         // Vandret bevægelse
