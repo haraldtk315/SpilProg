@@ -11,6 +11,7 @@ public class ScoreBoardManager : NetworkBehaviour
 
     public static NetworkVariable<int> score = new NetworkVariable<int>(0);
 
+    [SerializeField] private JSONSystemIO jsonSystem;
     [SerializeField] TMPro.TMP_Text scoreText;
 
     [ServerRpc]
@@ -42,5 +43,19 @@ public class ScoreBoardManager : NetworkBehaviour
         }
         */
     }
+    public void SaveCurrentScore()
+    {
+        jsonSystem.SaveScore(score.Value);
+    }
+
+    public void LoadSavedScore()
+    {
+        if (IsServer)
+        {
+            score.Value = jsonSystem.LoadScore();
+        }
+    }
+
+
 
 }
