@@ -42,7 +42,7 @@ public class StarManager : MonoBehaviour
     {
         if (currentStar == null)
         {
-            Vector3 randomPosition = new Vector3(Random.Range((float)-9.16, (float)9.16), Random.Range((float)-3.76, (float)5.69), 0);
+            Vector3 randomPosition = new Vector3(Random.Range(-9.16f, 9.16f), Random.Range(-3.76f, 5.69f), 1.85f);
             currentStar = Instantiate(starPrefab, randomPosition, Quaternion.identity);
         }
     }
