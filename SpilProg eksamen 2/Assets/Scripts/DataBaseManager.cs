@@ -23,15 +23,15 @@ public class DataBaseManager : MonoBehaviour
     {
         using (var connection = new SqliteConnection(dbName))
         {
-            Connection.Open();
+            connection.Open();
             
             //Set up an object called command to allow db control
-            using (var command = Connection.CreateCommand())
+            using (var command = connection.CreateCommand())
             {
-                command CommandText = "CREATE TABLE IF NOT EXISTS Scores (P1_Score INTEGER, P2_Score INTEGER, Score_Message TEXT, Time TEXT);";
-                Command.ExecuteNonQuery();
+                command.CommandText = "CREATE TABLE IF NOT EXISTS Scores (P1_Score INTEGER, P2_Score INTEGER, Score_Message TEXT, Time TEXT);";
+                command.ExecuteNonQuery();
             }
-            Connection.Close();
+            connection.Close();
         }
     }
 
