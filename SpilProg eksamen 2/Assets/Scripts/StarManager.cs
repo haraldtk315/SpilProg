@@ -1,18 +1,24 @@
 using System.Collections;
+using System.Data;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class StarManager : MonoBehaviour
 {
     public GameObject starPrefab;
+    public StarBehaviour starBehaviour;
+    public LayerMask groundLayer;
+
     private GameObject currentStar;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Awake()
+    void Start()
     {
         SpawnStar();
     }
 
-    private void OnTriggerEnter(Collider other)
+    /*
+    private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
@@ -26,7 +32,7 @@ public class StarManager : MonoBehaviour
             StartCoroutine(DestroyStar());
         }
     }
-
+    */
 
     public IEnumerator DestroyStar()
     {
@@ -40,11 +46,32 @@ public class StarManager : MonoBehaviour
 
     public void SpawnStar()
     {
-        if (currentStar == null)
+        if (currentStar != null) return;
+
+        Vector3 spawnPos;
+        bool validPosition = false;
+
+        Vector2 mapSize = BorderManager.size;
+        Vector2 offset = new Vector2(BorderManager.instance.leftLimit, BorderManager.instance.bottomLimit);
+
+        for (int i = 0; i < 20; i++) 
         {
-            Vector3 randomPosition = new Vector3(Random.Range((float)-9.16, (float)9.16), Random.Range((float)-3.76, (float)5.69), 0);
-            currentStar = Instantiate(starPrefab, randomPosition, Quaternion.identity);
+            spawnPos = new Vector3(
+                Random.Range(offset.x + 1, offset.x + mapSize.x - 1),
+                Random.Range(offset.y + 1, offset.y + mapSize.y - 1),
+                1.85f
+            );
+
+            Collider2D hit = Physics2D.OverlapCircle(spawnPos, 0.3f, groundLayer);
+
+            if (hit == null)
+            {
+                validPosition = true;
+                currentStar = Instantiate(starPrefab, spawnPos, Quaternion.identity);
+                break;
+            }
         }
+
     }
 
 
