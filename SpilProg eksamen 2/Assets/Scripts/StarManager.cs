@@ -1,9 +1,13 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class StarManager : MonoBehaviour
 {
     public GameObject starPrefab;
+    public StarBehaviour starBehaviour;
+    public LayerMask groundLayer;
+
     private GameObject currentStar;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -12,7 +16,8 @@ public class StarManager : MonoBehaviour
         SpawnStar();
     }
 
-    private void OnTriggerEnter(Collider other)
+    /*
+    private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
@@ -26,7 +31,7 @@ public class StarManager : MonoBehaviour
             StartCoroutine(DestroyStar());
         }
     }
-
+    */
 
     public IEnumerator DestroyStar()
     {
@@ -37,14 +42,31 @@ public class StarManager : MonoBehaviour
         //Spawn a new star at a random position within the bounds of the game area
         SpawnStar();
     }
-
     public void SpawnStar()
     {
-        if (currentStar == null)
+        if (currentStar != null) return;
+
+        Vector3 spawnPos;
+        bool validPosition = false;
+
+        for (int i = 0; i < 20; i++) 
         {
-            Vector3 randomPosition = new Vector3(Random.Range(-9.16f, 9.16f), Random.Range(-3.76f, 5.69f), 1.85f);
-            currentStar = Instantiate(starPrefab, randomPosition, Quaternion.identity);
+            spawnPos = new Vector3(
+                Random.Range(-9.16f, 9.16f),
+                Random.Range(-3.76f, 5.69f),
+                1.85f
+            );
+
+            Collider2D hit = Physics2D.OverlapCircle(spawnPos, 0.3f, groundLayer);
+
+            if (hit == null)
+            {
+                validPosition = true;
+                currentStar = Instantiate(starPrefab, spawnPos, Quaternion.identity);
+                break;
+            }
         }
+
     }
 
 

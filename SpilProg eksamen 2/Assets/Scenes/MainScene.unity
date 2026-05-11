@@ -206,6 +206,7 @@ MonoBehaviour:
     NetworkTopology: 0
     UseCMBService: 0
     AutoSpawnPlayerPrefabClientSide: 1
+    NetworkMessageMetrics: 1
     NetworkProfilingMetrics: 1
     OldPrefabList: []
   RunInBackground: 1
@@ -722,6 +723,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarManager
   starPrefab: {fileID: 768989760230985843, guid: 1d10d01cd6b37d240a02c48f42161218, type: 3}
+  starBehaviour: {fileID: 2417352883991723618, guid: 1d10d01cd6b37d240a02c48f42161218, type: 3}
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!4 &880032289
 Transform:
   m_ObjectHideFlags: 0
