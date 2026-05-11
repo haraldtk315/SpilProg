@@ -15,6 +15,8 @@ public class ScoreBoardManager : NetworkBehaviour
     public void AddScoreServerRpc()
     {
         score.Value++;
+        jsonSystem.SaveScore(score.Value);
+
     }
 
     private void Awake()
@@ -39,9 +41,9 @@ public class ScoreBoardManager : NetworkBehaviour
         }
         */
     }
-    public void SaveCurrentScore()
+    public void SaveCurrentScore(int currentScore)
     {
-        jsonSystem.SaveScore(score.Value);
+        jsonSystem.SaveScore(currentScore);
     }
 
     public void LoadSavedScore()
