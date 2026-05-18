@@ -13,10 +13,13 @@ public class JSONSystemIO : MonoBehaviour
 
     public void SaveScore()
     {
-        string json = JsonUtility.ToJson(ScoreBoardManager.scores[0].score, true);
-         json += JsonUtility.ToJson(ScoreBoardManager.scores[1].score, true);
+        SaveData data = new SaveData();
+        data.score1 = ScoreBoardManager.scores[0].score;
+        data.score2 = ScoreBoardManager.scores[1].score;
 
+        string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(filePath, json);
+
         Debug.Log("Score saved to: " + filePath);
         Debug.Log(json);
 
@@ -32,8 +35,16 @@ public class JSONSystemIO : MonoBehaviour
         }
 
         string json = File.ReadAllText(filePath);
-        ScoreBoardManager.scores[0] = JsonUtility.FromJson<PlayerScore>(json);
-        ScoreBoardManager.scores[1] = JsonUtility.FromJson<PlayerScore>(json);
+        SaveData data = JsonUtility.FromJson<SaveData>(json);
+        ScoreBoardManager.scores[0] = new PlayerScore { score = data.score1 };
+        ScoreBoardManager.scores[1] = new PlayerScore { score = data.score2 };
 
+    }
+
+    [System.Serializable]
+    public class SaveData
+    {
+        public int score1;
+        public int score2;
     }
 }
