@@ -55,14 +55,6 @@ public class ScoreBoardManager : NetworkBehaviour
             scoreTexts[i].text = score.score.ToString();
             i++;
         }
-
-        /*
-        InputAction jump = InputSystem.actions.FindAction("Crouch");
-        if (jump.ReadValue<float>() > 0 && jump.triggered)
-        {
-            AddScoreServerRpc();
-        }
-        */
     }
     public void SaveCurrentScore(int currentScore)
     {
