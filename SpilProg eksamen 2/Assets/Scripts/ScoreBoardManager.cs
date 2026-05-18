@@ -50,7 +50,7 @@ public class ScoreBoardManager : NetworkBehaviour
     {
         if (IsServer)
         {
-            score.Value = jsonSystem.LoadScore();
+           jsonSystem.LoadScore();
         }
     }
 
