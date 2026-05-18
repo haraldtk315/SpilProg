@@ -315,7 +315,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   movementScript: {fileID: 864497577781411155}
   visualRoot: {fileID: 7598284717169087726}
-  ragdollTime: 2
+  ragdollTime: 3
   sideVelocity: 14
   verticalVelocity: 1
   pushBurstTime: 0.18

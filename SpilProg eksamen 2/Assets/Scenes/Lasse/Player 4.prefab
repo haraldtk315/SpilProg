@@ -284,10 +284,10 @@ MonoBehaviour:
   movementScript: {fileID: 4209256605213479208}
   visualRoot: {fileID: 8648119524558772598}
   ragdollTime: 3
-  sideVelocity: 22
-  verticalVelocity: 0.5
+  sideVelocity: 14
+  verticalVelocity: 1
   pushBurstTime: 0.18
-  spinSpeed: 450
+  spinSpeed: 300
   useBorderWrapping: 1
 --- !u!114 &7495984694190119834
 MonoBehaviour:

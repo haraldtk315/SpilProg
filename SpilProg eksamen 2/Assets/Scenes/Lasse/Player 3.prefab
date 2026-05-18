@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 957950460222455606}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.015000001, y: -0.105, z: -0.46}
+  m_LocalPosition: {x: 0.015000001, y: -0.105, z: -0.424}
   m_LocalScale: {x: 0.5338235, y: 0.8473963, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -644,11 +644,11 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   movementScript: {fileID: 8199835629033054365}
   visualRoot: {fileID: 3638044005206720833}
-  ragdollTime: 0.7
-  sideVelocity: 22
-  verticalVelocity: 0.5
+  ragdollTime: 3
+  sideVelocity: 14
+  verticalVelocity: 1
   pushBurstTime: 0.18
-  spinSpeed: 450
+  spinSpeed: 300
   useBorderWrapping: 1
 --- !u!114 &2814290395814847470
 MonoBehaviour:
