@@ -4,7 +4,8 @@ using System.Collections.Generic;
 
 public class ScoreBoardManager : NetworkBehaviour
 {
-
+    
+    
     public static ScoreBoardManager instance;
 
     public static NetworkList<PlayerScore> scores = new NetworkList<PlayerScore>();
@@ -25,6 +26,7 @@ public class ScoreBoardManager : NetworkBehaviour
                 jsonSystem.SaveScore(scores[i].score);
             }
         }
+        DataBaseManager.InsertScore(scores[0].score, scores[1].score, System.DateTime.Now.ToString(), "Star collected" );
     }
 
     private void Awake()

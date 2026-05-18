@@ -12,7 +12,7 @@ public class DataBaseManager : MonoBehaviour
     public Text scoreMessage;
     
     //Name of the DB
-    private string dbName = "SpilProg2ExamDatabase";
+    private static string dbName = "SpilProg2ExamDatabase";
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -31,14 +31,14 @@ public class DataBaseManager : MonoBehaviour
             //Set up an object called command to allow db control
             using (var command = connection.CreateCommand())
             {
-                command.CommandText = "CREATE TABLE IF NOT EXISTS Scores (P1_Score INTEGER, P2_Score INTEGER, Score_Message TEXT, Time TEXT);";
+                command.CommandText = "CREATE TABLE IF NOT EXISTS Scores (P1_Score INTEGER, P2_Score INTEGER, Score_Message string, Time string);";
                 command.ExecuteNonQuery();
             }
             connection.Close();
         }
     }
 
-    public void InsertScore(int P1Score, int P2Score, Text time, Text scoreMessage)
+    public static void InsertScore(int P1Score, int P2Score, string time, string scoreMessage)
     {
         string dbPath = System.IO.Path.Combine(Application.persistentDataPath, dbName + ".db");
         string connectionString = $"Data Source={dbPath}";
