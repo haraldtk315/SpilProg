@@ -36,6 +36,7 @@ public class DataBaseManager : MonoBehaviour
 
     public static void InsertScore(int P1Score, int P2Score, string time, string scoreMessage)
     {
+        Debug.Log("Insert() runs");
         string dbPath = System.IO.Path.Combine(Application.persistentDataPath, dbName + ".db");
         string connectionString = $"Data Source={dbPath}";
 

@@ -16,6 +16,7 @@ public class ScoreBoardManager : NetworkBehaviour
     [ServerRpc]
     public void AddScoreServerRpc(ulong playerID)
     {
+        Debug.Log("AddScore() runs");
         for (int i = 0; i < scores.Count; i++)
         {
             if (scores[i].player == playerID)
@@ -23,10 +24,11 @@ public class ScoreBoardManager : NetworkBehaviour
                 PlayerScore newScore = scores[i];
                 newScore.score++;
                 scores[i] = newScore;
+                DataBaseManager.InsertScore(scores[0].score, scores[1].score, System.DateTime.Now.ToString(), "Star collected" );
                 jsonSystem.SaveScore(scores[i].score);
             }
         }
-        DataBaseManager.InsertScore(scores[0].score, scores[1].score, System.DateTime.Now.ToString(), "Star collected" );
+        
     }
 
     private void Awake()
