@@ -25,7 +25,6 @@ public class ScoreBoardManager : NetworkBehaviour
                 newScore.score++;
                 scores[i] = newScore;
                 DataBaseManager.InsertScore(scores[0].score, scores[1].score, System.DateTime.Now.ToString(), "Star collected" );
-                jsonSystem.SaveScore(scores[i].score);
             }
         }
         
@@ -58,17 +57,14 @@ public class ScoreBoardManager : NetworkBehaviour
             i++;
         }
     }
-    public void SaveCurrentScore(int currentScore)
+    public void SaveCurrentScore()
     {
-        jsonSystem.SaveScore(currentScore);
+        jsonSystem.SaveScore();
     }
 
     public void LoadSavedScore()
     {
-        if (IsServer)
-        {
-           jsonSystem.LoadScore();
-        }
+        jsonSystem.LoadScore();
     }
 
 

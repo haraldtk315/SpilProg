@@ -1,29 +1,26 @@
 using System.IO;
 using UnityEngine;
 using UnityEngine.SocialPlatforms.Impl;
-using UnityEngine.UI;
 
 public class JSONSystemIO : MonoBehaviour
 {
     private string filePath;
-
-    public TMPro.TMP_Text scoreText;
-    private int score;
-
     void Start()
     {
         filePath = Application.persistentDataPath + "/playerdata.json";
+        Debug.Log("Save path: " + filePath);
     }
 
-    public void SaveScore(int score)
+    public void SaveScore()
     {
-        ScoreData data = new ScoreData();
-        data.score = score;
+        string json = JsonUtility.ToJson(ScoreBoardManager.scores[0].score, true);
+         json += JsonUtility.ToJson(ScoreBoardManager.scores[1].score, true);
 
-        string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(filePath, json);
+        Debug.Log("Score saved to: " + filePath);
+        Debug.Log(json);
 
-        Debug.Log("Score gemt: " + score);
+        Debug.Log("Score gemt: " + ScoreBoardManager.scores);
     }
 
     public void LoadScore()
@@ -31,24 +28,12 @@ public class JSONSystemIO : MonoBehaviour
         if (!File.Exists(filePath))
         {
             Debug.LogWarning("Save file does not exist: " + filePath);
-            scoreText.text = "0";
+            return;
         }
 
-        if (File.Exists(filePath))
-        {
-            string json = File.ReadAllText(filePath);
-            ScoreData data = JsonUtility.FromJson<ScoreData>(json);
-            score = data.score;
-            scoreText.text = score.ToString();
+        string json = File.ReadAllText(filePath);
+        ScoreBoardManager.scores[0] = JsonUtility.FromJson<PlayerScore>(json);
+        ScoreBoardManager.scores[1] = JsonUtility.FromJson<PlayerScore>(json);
 
-            Debug.Log("Score loaded: " + data.score);
-
-        } 
     }
-}
-
-[System.Serializable]
-public class ScoreData
-{
-    public int score;
 }
