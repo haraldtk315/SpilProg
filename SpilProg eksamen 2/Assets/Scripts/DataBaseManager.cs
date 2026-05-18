@@ -45,8 +45,13 @@ public class DataBaseManager : MonoBehaviour
             connection.Open();
 
             using (var command = connection.CreateCommand())
-            {
-                command.CommandText = $"INSERT INTO Scores (P1_Score, P2_Score, Score_Message, Time) VALUES ({P1Score}, {P2Score}, {scoreMessage}, {time});";
+            {  
+                command.CommandText = $"INSERT INTO Scores (P1_Score, P2_Score, Score_Message, Time) VALUES (@P1Score, @P2Score, @scoreMessage, @Time);";
+                
+                command.Parameters.AddWithValue("@P1Score", P1Score);
+                command.Parameters.AddWithValue("@P2Score", P2Score);
+                command.Parameters.AddWithValue("@ScoreMessage", scoreMessage);
+                command.Parameters.AddWithValue("@Time", time);
                 command.ExecuteNonQuery();
             }
             connection.Close();
