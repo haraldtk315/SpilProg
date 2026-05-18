@@ -14,7 +14,7 @@ public class StarBehaviour : NetworkBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (!IsServer) return;
-        ScoreBoardManager.instance.AddScoreServerRpc();
+        ScoreBoardManager.instance.AddScoreServerRpc(collision.gameObject.GetComponentInChildren<Movement>().OwnerClientId);
         starManager.GrabStarServerRpc();
     }
     

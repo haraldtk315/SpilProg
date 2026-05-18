@@ -20,6 +20,7 @@ public class Movement : NetworkBehaviour
         rb = GetComponent<Rigidbody2D>();
         if (IsOwner) Camera.main.GetComponent<CameraFollow>().player = transform;
         if (IsServer) FindAnyObjectByType<StarManager>().TrySpawnStarRpc();
+        if (IsOwner) ScoreBoardManager.instance.AddPlayerScoreRpc(OwnerClientId);
     }
 
     // Update is called once per frame

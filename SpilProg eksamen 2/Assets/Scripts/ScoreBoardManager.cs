@@ -1,21 +1,30 @@
 using UnityEngine;
 using Unity.Netcode;
+using System.Collections.Generic;
 
 public class ScoreBoardManager : NetworkBehaviour
 {
 
     public static ScoreBoardManager instance;
 
-    public static NetworkVariable<int> score = new NetworkVariable<int>(0);
+    public static NetworkList<PlayerScore> scores = new NetworkList<PlayerScore>();
 
     [SerializeField] private JSONSystemIO jsonSystem;
-    [SerializeField] TMPro.TMP_Text scoreText;
+    [SerializeField] List<TMPro.TMP_Text> scoreTexts;
 
     [ServerRpc]
-    public void AddScoreServerRpc()
+    public void AddScoreServerRpc(ulong playerID)
     {
-        score.Value++;
-        jsonSystem.SaveScore(score.Value);
+        for (int i = 0; i < scores.Count; i++)
+        {
+            if (scores[i].player == playerID)
+            {
+                PlayerScore newScore = scores[i];
+                newScore.score++;
+                scores[i] = newScore;
+                jsonSystem.SaveScore(scores[i].score);
+            }
+        }
     }
 
     private void Awake()
@@ -27,10 +36,23 @@ public class ScoreBoardManager : NetworkBehaviour
         }
         instance = this;
     }
-    
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void AddPlayerScoreRpc(ulong playerID)
+    {
+        PlayerScore score = new PlayerScore();
+        score.player = playerID;
+        scores.Add(score);
+    }
+
     public void Update()
     {
-        scoreText.text = score.Value.ToString();
+        int i = 0;
+        foreach (PlayerScore score in scores)
+        {
+            scoreTexts[i].text = score.score.ToString();
+            i++;
+        }
 
         /*
         InputAction jump = InputSystem.actions.FindAction("Crouch");
