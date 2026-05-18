@@ -21,7 +21,10 @@ public class DataBaseManager : MonoBehaviour
     
     public void CreateDB()
     {
-        using (var connection = new SqliteConnection(dbName))
+        string dbPath = System.IO.Path.Combine(Application.persistentDataPath, dbName + ".db");
+        string connectionString = $"Data Source={dbPath}";
+        
+        using (var connection = new SqliteConnection(connectionString))
         {
             connection.Open();
             
@@ -34,6 +37,30 @@ public class DataBaseManager : MonoBehaviour
             connection.Close();
         }
     }
+
+    public void InsertScore(int P1Score, int P2Score, Text time, Text scoreMessage)
+    {
+        string dbPath = System.IO.Path.Combine(Application.persistentDataPath, dbName + ".db");
+        string connectionString = $"Data Source={dbPath}";
+
+        using (var connection = new SqliteConnection(connectionString))
+        {
+            connection.Open();
+
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = "INSERT INTO Scores (P1_Score, P2_Score, Score_Message, Time) VALUES (P1Score, P2Score, Score_Message, time);";
+                command.ExecuteNonQuery();
+            }
+            connection.Close();
+        }
+    }
+
+    public void UpdateScore(int P1Score, int P2Score, Text time)
+    {
+        
+    }
+    
 
     // Update is called once per frame
     void Update()
