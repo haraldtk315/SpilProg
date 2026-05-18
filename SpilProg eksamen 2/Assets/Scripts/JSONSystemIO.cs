@@ -1,9 +1,14 @@
-using UnityEngine;
 using System.IO;
+using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
+using UnityEngine.UI;
 
 public class JSONSystemIO : MonoBehaviour
 {
     private string filePath;
+
+    public TMPro.TMP_Text scoreText;
+    private int score;
 
     void Start()
     {
@@ -21,19 +26,24 @@ public class JSONSystemIO : MonoBehaviour
         Debug.Log("Score gemt: " + score);
     }
 
-    public int LoadScore()
+    public void LoadScore()
     {
+        if (!File.Exists(filePath))
+        {
+            Debug.LogWarning("Save file does not exist: " + filePath);
+            scoreText.text = "0";
+        }
+
         if (File.Exists(filePath))
         {
             string json = File.ReadAllText(filePath);
             ScoreData data = JsonUtility.FromJson<ScoreData>(json);
+            score = data.score;
+            scoreText.text = score.ToString();
 
             Debug.Log("Score loaded: " + data.score);
-            return data.score;
-        }
 
-        Debug.LogWarning("Ingen save-fil fundet");
-        return 0;
+        } 
     }
 }
 
