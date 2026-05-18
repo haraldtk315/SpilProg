@@ -450,7 +450,7 @@ MonoBehaviour:
       - m_Target: {fileID: 646063845}
         m_TargetAssemblyTypeName: JSONSystemIO, Assembly-CSharp
         m_MethodName: SaveScore
-        m_Mode: 3
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -1035,7 +1035,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eccaa6f3041758249973d4ace72f4ec0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::JSONSystemIO
-  scoreText: {fileID: 1883706966}
 --- !u!1 &653114435
 GameObject:
   m_ObjectHideFlags: 0
@@ -3994,7 +3993,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ScoreBoardManager
   ShowTopMostFoldoutHeaderGroup: 1
-  jsonSystem: {fileID: 0}
+  jsonSystem: {fileID: 646063845}
   scoreTexts:
   - {fileID: 1883706966}
   - {fileID: 2114899748}
