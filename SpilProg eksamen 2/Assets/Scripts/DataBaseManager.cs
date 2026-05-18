@@ -6,10 +6,6 @@ using UnityEditor.MemoryProfiler;
 
 public class DataBaseManager : MonoBehaviour
 {
-    public int P1Score;
-    public int P2Score;
-    public Text time;
-    public Text scoreMessage;
     
     //Name of the DB
     private static string dbName = "SpilProg2ExamDatabase";
@@ -31,7 +27,7 @@ public class DataBaseManager : MonoBehaviour
             //Set up an object called command to allow db control
             using (var command = connection.CreateCommand())
             {
-                command.CommandText = "CREATE TABLE IF NOT EXISTS Scores (P1_Score INTEGER, P2_Score INTEGER, Score_Message string, Time string);";
+                command.CommandText = "CREATE TABLE IF NOT EXISTS Scores (P1_Score INTEGER, P2_Score INTEGER, Score_Message TEXT, Time TEXT);";
                 command.ExecuteNonQuery();
             }
             connection.Close();
@@ -49,7 +45,7 @@ public class DataBaseManager : MonoBehaviour
 
             using (var command = connection.CreateCommand())
             {
-                command.CommandText = "INSERT INTO Scores (P1_Score, P2_Score, Score_Message, Time) VALUES (P1Score, P2Score, Score_Message, time);";
+                command.CommandText = $"INSERT INTO Scores (P1_Score, P2_Score, Score_Message, Time) VALUES ({P1Score}, {P2Score}, {scoreMessage}, {time});";
                 command.ExecuteNonQuery();
             }
             connection.Close();
