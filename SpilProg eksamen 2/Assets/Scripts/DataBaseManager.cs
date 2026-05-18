@@ -1,8 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
-using System.Data;
 using Mono.Data.Sqlite;
-using UnityEditor.MemoryProfiler;
 
 public class DataBaseManager : MonoBehaviour
 {
