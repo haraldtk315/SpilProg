@@ -1,21 +1,14 @@
 using System.Collections;
-using System.Data;
-using Unity.VisualScripting;
+using Unity.Netcode;
 using UnityEngine;
 
-public class StarManager : MonoBehaviour
+public class StarManager : NetworkBehaviour
 {
     public GameObject starPrefab;
     public StarBehaviour starBehaviour;
     public LayerMask groundLayer;
 
     private GameObject currentStar;
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        SpawnStar();
-    }
 
     /*
     private void OnTriggerEnter2D(Collider2D other)
@@ -34,20 +27,29 @@ public class StarManager : MonoBehaviour
     }
     */
 
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Server)]
+    public void TrySpawnStarRpc()
+    {
+        if (NetworkManager.ConnectedClientsList.Count == 2) SpawnStar();
+    }
+
+    [ServerRpc]
+    public void GrabStarServerRpc()
+    {
+        StartCoroutine(DestroyStar());
+    }
+
     public IEnumerator DestroyStar()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.1f);
         Destroy(currentStar);
-        currentStar = null;
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(4f);
         //Spawn a new star at a random position within the bounds of the game area
         SpawnStar();
     }
 
     public void SpawnStar()
     {
-        if (currentStar != null) return;
-
         Vector3 spawnPos;
         bool validPosition = false;
 
@@ -68,6 +70,7 @@ public class StarManager : MonoBehaviour
             {
                 validPosition = true;
                 currentStar = Instantiate(starPrefab, spawnPos, Quaternion.identity);
+                currentStar.GetComponent<NetworkObject>().Spawn();
                 break;
             }
         }

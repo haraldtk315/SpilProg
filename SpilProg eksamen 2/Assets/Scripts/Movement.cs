@@ -2,7 +2,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Movement : MonoBehaviour
+public class Movement : NetworkBehaviour
 {
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float jumpForce = 7f;
@@ -17,8 +17,9 @@ public class Movement : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        Camera.main.GetComponent<CameraFollow>().player = transform;
         rb = GetComponent<Rigidbody2D>();
+        if (IsOwner) Camera.main.GetComponent<CameraFollow>().player = transform;
+        if (IsServer) FindAnyObjectByType<StarManager>().TrySpawnStarRpc();
     }
 
     // Update is called once per frame

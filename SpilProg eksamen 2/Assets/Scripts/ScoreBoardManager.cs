@@ -16,7 +16,6 @@ public class ScoreBoardManager : NetworkBehaviour
     {
         score.Value++;
         jsonSystem.SaveScore(score.Value);
-
     }
 
     private void Awake()

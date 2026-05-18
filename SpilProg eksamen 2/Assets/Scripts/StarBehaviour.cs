@@ -1,7 +1,8 @@
 using UnityEngine;
 using System.Collections;
+using Unity.Netcode;
 
-public class StarBehaviour : MonoBehaviour
+public class StarBehaviour : NetworkBehaviour
 {
     public StarManager starManager;
 
@@ -12,8 +13,9 @@ public class StarBehaviour : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (!IsServer) return;
         ScoreBoardManager.instance.AddScoreServerRpc();
-        starManager.StartCoroutine(starManager.DestroyStar());
+        starManager.GrabStarServerRpc();
     }
     
 }
