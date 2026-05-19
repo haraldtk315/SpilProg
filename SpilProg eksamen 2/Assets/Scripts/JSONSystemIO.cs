@@ -36,8 +36,8 @@ public class JSONSystemIO : MonoBehaviour
 
         string json = File.ReadAllText(filePath);
         SaveData data = JsonUtility.FromJson<SaveData>(json);
-        ScoreBoardManager.scores[0] = new PlayerScore { score = data.score1 };
-        ScoreBoardManager.scores[1] = new PlayerScore { score = data.score2 };
+        ScoreBoardManager.scores[0] = new PlayerScore { player = ScoreBoardManager.scores[0].player, score = data.score1 };
+        ScoreBoardManager.scores[1] = new PlayerScore { player = ScoreBoardManager.scores[1].player, score = data.score2 };
 
     }
 
